@@ -544,6 +544,37 @@ class BacktestServer:
         cross_leverages:    Optional[Dict[str, Dict[str, float]]] = None,
         data_utcoffset:     int = 0
     ) -> None:
+        """
+        Initializes the Backtest class with market data, account balances, and optional cross-leverages.
+        This constructor processes the provided OHLCV data for various categories and symbols, validates the data structure,
+        computes Average True Range (ATR) values, adjusts timestamps for UTC offset, and sets up internal data structures
+        for backtesting. It also initializes a linked list for order management and resets the backtest state.
+        Parameters:
+        -----------
+        data : Dict[str, Dict[str, DataFrame]]
+            A nested dictionary where the outer key is the category (e.g., 'linear', 'inverse'), the inner key is the symbol
+            (e.g., 'BTCUSDT'), and the value is a DataFrame with columns ['time', 'open', 'high', 'low', 'close', 'volume'].
+            All DataFrames must have identical 'time' columns.
+            Example structure:
+            data = {
+                'linear': {
+                    'BTCUSDT': DataFrame(columns=['time', 'open', 'high', 'low', 'close', 'volume']),
+                    'ETHUSDT': DataFrame(columns=['time', 'open', 'high', 'low', 'close', 'volume'])
+                },
+                'inverse': {
+                    'BTCUSD': DataFrame(columns=['time', 'open', 'high', 'low', 'close', 'volume']),
+                    'ETHUSD': DataFrame(columns=['time', 'open', 'high', 'low', 'close', 'volume'])
+                }
+            }
+        balances : Dict[str, float]
+            A dictionary mapping settlement coins (e.g., 'USDT') to their initial balances. Must include balances for all
+            settlement coins derived from the data categories and symbols.
+        cross_leverages : Optional[Dict[str, Dict[str, float]]], default=None
+            A nested dictionary specifying cross-leverages for categories and symbols. If None, defaults to a dictionary
+            with maximum leverage (self.MAX_LEVERAGE) for all. Structure: {category: {symbol: leverage}}.
+        data_utcoffset : int, default=0
+            The UTC offset in hours for the input data timestamps. Used to adjust times to the current system's UTC offset.
+        """
         
         # (Deprecated) Data structure for storing OHLCV data
         self.data = data
