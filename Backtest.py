@@ -1004,6 +1004,21 @@ class BacktestServer:
         orderLinkId: Optional[str] = None, 
         openOnly: int = 0
     ) -> List[Dict[str, Any]]:
+        """
+        Primarily query for active orders but also support recent 500 closed status orders
+
+        Args:
+            category (str): Product type.
+            symbol (str): Symbol name.
+            orderId (Optional[str], optional): Order ID
+            orderLinkId (Optional[str], optional): User customized ID.
+            openOnly (int, optional): 
+            - `0`: Active orders.
+            - `1`: Closed orders.
+
+        Returns:
+            List[Dict[str, Any]]: List of orders in dictionary format.
+        """
         orders = self._get_open_orders(category, symbol, orderId, orderLinkId, openOnly)
         return [order.asdict() for order in orders]
     
